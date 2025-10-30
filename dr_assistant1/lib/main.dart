@@ -38,30 +38,30 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Dr. Assistant',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          useMaterial3: true,
-          brightness: Brightness.light,
-          primarySwatch: Colors.blue,
-          scaffoldBackgroundColor: Colors.white,
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Color(0xFF2196F3),
-            foregroundColor: Colors.white,
-          ),
+      title: 'Dr. Assistant',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.light,
+        primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF2196F3),
+          foregroundColor: Colors.white,
         ),
-        darkTheme: ThemeData(
-          useMaterial3: true,
-          brightness: Brightness.dark,
-          primarySwatch: Colors.blue,
-          scaffoldBackgroundColor: Color(0xFF121212),
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Color(0xFF2196F3),
-            foregroundColor: Colors.white,
-          ),
+      ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Color(0xFF121212),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF2196F3),
+          foregroundColor: Colors.white,
         ),
-        themeMode: _isDark ? ThemeMode.dark : ThemeMode.light,
-        home: WelcomeScreen(onThemeToggle: _toggleTheme),
-        );
-    }
+      ),
+      themeMode: _isDark ? ThemeMode.dark : ThemeMode.light,
+      home: WelcomeScreen(onThemeToggle: _toggleTheme),
+    );
+  }
 }

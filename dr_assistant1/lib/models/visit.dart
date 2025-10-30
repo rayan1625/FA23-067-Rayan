@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class Visit {
   final String id;
   final String patientId;
@@ -9,6 +7,7 @@ class Visit {
   final String diagnosis;
   final String treatment;
   final String notes;
+  final DateTime createdAt;
 
   Visit({
     required this.id,
@@ -19,6 +18,7 @@ class Visit {
     required this.diagnosis,
     required this.treatment,
     required this.notes,
+    required this.createdAt,
   });
 
   factory Visit.fromJson(Map<String, dynamic> json) {
@@ -29,8 +29,9 @@ class Visit {
       date: DateTime.parse(json['date']),
       symptoms: json['symptoms'],
       diagnosis: json['diagnosis'],
-      treatment: json['treatment'],
-      notes: json['notes'],
+      treatment: json['treatment'] ?? '',
+      notes: json['notes'] ?? '',
+      createdAt: DateTime.parse(json['createdAt']),
     );
   }
 
@@ -44,6 +45,7 @@ class Visit {
       'diagnosis': diagnosis,
       'treatment': treatment,
       'notes': notes,
+      'createdAt': createdAt.toIso8601String(),
     };
     }
 }
