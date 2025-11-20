@@ -1,16 +1,9 @@
-# lab_mid
+![rs](https://github.com/user-attachments/assets/a1c1b078-499a-4997-9f51-597ae73c3339)
 
-A new Flutter project.
+![rs2](https://github.com/user-attachments/assets/4da82271-db80-454b-a837-427043680154)
+![rx1](https://github.com/user-attachments/assets/a4d30ae2-d85e-4afa-bb05-c5179536d7e6)
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+https://github.com/user-attachments/assets/1d0522ad-646c-49e3-b1bc-6505a9bfc75a
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
