@@ -16,33 +16,33 @@ class BMIScreen extends StatelessWidget {
         child: Column(
           children: [
 
-            // ROW 1 → 2 CARDS
+            // ROW 1 → 2 BOXES
             Expanded(
               child: Row(
-                children: [
-                  Expanded(child: buildCard()),
-                  const SizedBox(width: 15),
-                  Expanded(child: buildCard()),
+                children: const [
+                  Expanded(child: RepeatContainerCode()),
+                  SizedBox(width: 15),
+                  Expanded(child: RepeatContainerCode()),
                 ],
               ),
             ),
 
             const SizedBox(height: 15),
 
-            // ROW 2 → 1 CARD
-            Expanded(
-              child: buildCard(),
+            // ROW 2 → 1 BOX
+            const Expanded(
+              child: RepeatContainerCode(),
             ),
 
             const SizedBox(height: 15),
 
-            // ROW 3 → 2 CARDS
+            // ROW 3 → 2 BOXES
             Expanded(
               child: Row(
-                children: [
-                  Expanded(child: buildCard()),
-                  const SizedBox(width: 15),
-                  Expanded(child: buildCard()),
+                children: const [
+                  Expanded(child: RepeatContainerCode()),
+                  SizedBox(width: 15),
+                  Expanded(child: RepeatContainerCode()),
                 ],
               ),
             ),
@@ -51,8 +51,17 @@ class BMIScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget buildCard() {
+
+/// ----------------------------------------------------------
+///  🔵 REUSABLE CONTAINER WIDGET
+/// ----------------------------------------------------------
+class RepeatContainerCode extends StatelessWidget {
+  const RepeatContainerCode({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFF1E1E2F),
