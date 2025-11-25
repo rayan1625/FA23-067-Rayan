@@ -1,109 +1,62 @@
 import 'package:flutter/material.dart';
-class BMIScreen extends StatefulWidget {
+
+class BMIScreen extends StatelessWidget {
   const BMIScreen({super.key});
-
-  @override
-  State<BMIScreen> createState() => _BMIScreenState();
-}
-
-class _BMIScreenState extends State<BMIScreen> {
-  final TextEditingController heightController = TextEditingController();
-  final TextEditingController weightController = TextEditingController();
-
-  double bmi = 0;
-  String resultText = "";
-
-  void calculateBMI() {
-    double height = double.tryParse(heightController.text) ?? 0;
-    double weight = double.tryParse(weightController.text) ?? 0;
-
-    if (height == 0 || weight == 0) {
-      setState(() {
-        resultText = "Please enter valid height & weight.";
-        bmi = 0;
-      });
-      return;
-    }
-
-    height = height / 100; // cm to meters
-    bmi = weight / (height * height);
-
-    setState(() {
-      if (bmi < 18.5) {
-        resultText = "Underweight";
-      } else if (bmi >= 18.5 && bmi < 24.9) {
-        resultText = "Healthy Weight";
-      } else if (bmi >= 25 && bmi < 29.9) {
-        resultText = "Overweight";
-      } else {
-        resultText = "Obese";
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("BMI Calculator"),
+        backgroundColor: const Color(0xFF1A1A2E),
+        title: const Text("BMI CALCULATOR"),
       ),
+
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(15),
         child: Column(
           children: [
-            TextField(
-              controller: heightController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: "Height (cm)",
+
+            // ROW 1 → 2 CARDS
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(child: buildCard()),
+                  const SizedBox(width: 15),
+                  Expanded(child: buildCard()),
+                ],
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
 
-            TextField(
-              controller: weightController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: "Weight (kg)",
-              ),
+            // ROW 2 → 1 CARD
+            Expanded(
+              child: buildCard(),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 15),
 
-            ElevatedButton(
-              onPressed: calculateBMI,
-              child: const Text(
-                "Calculate BMI",
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
-
-            const SizedBox(height: 30),
-
-            Text(
-              bmi == 0 ? "" : "Your BMI: ${bmi.toStringAsFixed(2)}",
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            Text(
-              resultText,
-              style: TextStyle(
-                fontSize: 20,
-                color: resultText == "Healthy Weight"
-                    ? Colors.greenAccent
-                    : Colors.redAccent,
-                fontWeight: FontWeight.w500,
+            // ROW 3 → 2 CARDS
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(child: buildCard()),
+                  const SizedBox(width: 15),
+                  Expanded(child: buildCard()),
+                ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buildCard() {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E1E2F),
+        borderRadius: BorderRadius.circular(12),
       ),
     );
   }
