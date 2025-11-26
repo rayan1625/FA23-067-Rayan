@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'IconTextFile.dart';
 import 'ContainerFile.dart';
 
-// ENUM FOR GENDER
 enum Gender { male, female }
 
 class BMIScreen extends StatefulWidget {
@@ -18,6 +17,15 @@ class _BMIScreenState extends State<BMIScreen> {
   final Color activeColor = const Color(0xFF3D3D5C);
   final Color deActiveColor = const Color(0xFF1E1E2F);
 
+  // ------------------------------
+  // 🔵 COMMON FUNCTION FOR MALE/FEMALE PRESS
+  // ------------------------------
+  void selectGender(Gender gender) {
+    setState(() {
+      selectedGender = gender;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,51 +40,33 @@ class _BMIScreenState extends State<BMIScreen> {
           children: [
 
             // ------------------------------------------------------
-            // ROW 1 — MALE + FEMALE (TERNARY OPERATOR)
+            // ROW 1 — MALE + FEMALE
             // ------------------------------------------------------
             Expanded(
               child: Row(
                 children: [
 
-                  // ---------------- MALE BOX ----------------
                   Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedGender = Gender.male;
-                        });
-                      },
-                      child: RepeatTextAndIconWidget(
-                        title: "MALE",
-                        icon: Icons.male,
-
-                        // TERNARY HERE ✔
-                        boxColor: selectedGender == Gender.male
-                            ? activeColor
-                            : deActiveColor,
-                      ),
+                    child: RepeatTextAndIconWidget(
+                      title: "MALE",
+                      icon: Icons.male,
+                      boxColor: selectedGender == Gender.male
+                          ? activeColor
+                          : deActiveColor,
+                      onPressed: () => selectGender(Gender.male),
                     ),
                   ),
 
                   const SizedBox(width: 15),
 
-                  // ---------------- FEMALE BOX ----------------
                   Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedGender = Gender.female;
-                        });
-                      },
-                      child: RepeatTextAndIconWidget(
-                        title: "FEMALE",
-                        icon: Icons.female,
-
-                        // TERNARY HERE ✔
-                        boxColor: selectedGender == Gender.female
-                            ? activeColor
-                            : deActiveColor,
-                      ),
+                    child: RepeatTextAndIconWidget(
+                      title: "FEMALE",
+                      icon: Icons.female,
+                      boxColor: selectedGender == Gender.female
+                          ? activeColor
+                          : deActiveColor,
+                      onPressed: () => selectGender(Gender.female),
                     ),
                   ),
                 ],
