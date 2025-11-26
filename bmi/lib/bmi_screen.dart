@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'IconTextFile.dart';
 import 'ContainerFile.dart';
 
+// ----------------------------------------------------------
+// 🔵 ENUM FOR GENDER
+// ----------------------------------------------------------
+enum Gender { male, female }
+
 class BMIScreen extends StatefulWidget {
   const BMIScreen({super.key});
 
@@ -10,13 +15,12 @@ class BMIScreen extends StatefulWidget {
 }
 
 class _BMIScreenState extends State<BMIScreen> {
-  // ----------------------------------------------------------
-  // 🔵 ACTIVE / DEACTIVE COLOR LOGIC
-  // ----------------------------------------------------------
-  Color activeColor = const Color(0xFF3D3D5C);
-  Color deActiveColor = const Color(0xFF1E1E2F);
+  // ACTIVE / DEACTIVE COLORS
+  final Color activeColor = const Color(0xFF3D3D5C);
+  final Color deActiveColor = const Color(0xFF1E1E2F);
 
-  bool isMale = true; // Default male selected
+  // DEFAULT SELECTED GENDER
+  Gender selectedGender = Gender.male;
 
   @override
   Widget build(BuildContext context) {
@@ -31,43 +35,47 @@ class _BMIScreenState extends State<BMIScreen> {
         child: Column(
           children: [
 
-            // ----------------------------------------
-            // ROW 1 → MALE + FEMALE BOXES
-            // ----------------------------------------
+            // ----------------------------------------------------
+            // ROW 1 → MALE / FEMALE
+            // ----------------------------------------------------
             Expanded(
               child: Row(
                 children: [
 
-                  // ------------------ MALE BOX ------------------
+                  // -------------------- MALE --------------------
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
-                          isMale = true;
+                          selectedGender = Gender.male;
                         });
                       },
                       child: RepeatTextAndIconWidget(
                         title: "MALE",
                         icon: Icons.male,
-                        boxColor: isMale ? activeColor : deActiveColor,
+                        boxColor: selectedGender == Gender.male
+                            ? activeColor
+                            : deActiveColor,
                       ),
                     ),
                   ),
 
                   const SizedBox(width: 15),
 
-                  // ----------------- FEMALE BOX ------------------
+                  // ------------------- FEMALE -------------------
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
-                          isMale = false;
+                          selectedGender = Gender.female;
                         });
                       },
                       child: RepeatTextAndIconWidget(
                         title: "FEMALE",
                         icon: Icons.female,
-                        boxColor: isMale ? deActiveColor : activeColor,
+                        boxColor: selectedGender == Gender.female
+                            ? activeColor
+                            : deActiveColor,
                       ),
                     ),
                   ),
@@ -77,18 +85,18 @@ class _BMIScreenState extends State<BMIScreen> {
 
             const SizedBox(height: 15),
 
-            // ----------------------------------------
-            // ROW 2 → NORMAL EMPTY BOX
-            // ----------------------------------------
+            // ----------------------------------------------------
+            // ROW 2 → EMPTY BOX
+            // ----------------------------------------------------
             const Expanded(
               child: RepeatContainerCode(),
             ),
 
             const SizedBox(height: 15),
 
-            // ----------------------------------------
-            // ROW 3 → NORMAL EMPTY BOXES
-            // ----------------------------------------
+            // ----------------------------------------------------
+            // ROW 3 → TWO EMPTY BOXES
+            // ----------------------------------------------------
             Expanded(
               child: Row(
                 children: const [

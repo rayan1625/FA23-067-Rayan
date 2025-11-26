@@ -22,7 +22,11 @@ class RepeatTextAndIconWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 60, color: Colors.white),
+          Icon(
+            icon,
+            size: 60,
+            color: Colors.white,
+          ),
           const SizedBox(height: 10),
           Text(
             title,
