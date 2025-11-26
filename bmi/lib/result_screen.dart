@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'ConstantFile.dart';
-import 'bmi_screen.dart'; // wapas jane ke liye
 
 class ResultScreen extends StatelessWidget {
   final double bmi;
@@ -16,12 +16,10 @@ class ResultScreen extends StatelessWidget {
     required this.feedback,
   });
 
-  // Yeh function BMI calculate karega (hum BMIScreen se call karenge)
+  // Sirf weight aur height se BMI calculate karenge (age ki zaroorat nahi)
   static ResultScreen calculateBMI({
     required int weight,
     required int height,
-    required int age,
-    required Gender gender,
   }) {
     double heightInMeter = height / 100;
     double bmiValue = weight / (heightInMeter * heightInMeter);
@@ -33,19 +31,19 @@ class ResultScreen extends StatelessWidget {
     if (bmiValue < 18.5) {
       result = "Underweight";
       color = Colors.orange;
-      comment = "BMI is Low! You should eat more healthy food & gain weight.";
-    } else if (bmiValue >= 18.5 && bmiValue <= 24.9) {
+      comment = "BMI is Low! Eat more healthy food & gain some weight.";
+    } else if (bmiValue <= 24.9) {
       result = "Normal";
       color = Colors.green;
-      comment = "Perfect! Your BMI is in healthy range. Keep it up!";
-    } else if (bmiValue >= 25 && bmiValue <= 29.9) {
+      comment = "Perfect! Your BMI is in healthy range. Great job!";
+    } else if (bmiValue <= 29.9) {
       result = "Overweight";
       color = Colors.orange;
-      comment = "BMI is High! Start exercising and control diet.";
+      comment = "BMI is High! Start exercise and control your diet.";
     } else {
       result = "Obese";
       color = Colors.red;
-      comment = "Warning! BMI is very high. Consult doctor & start workout immediately.";
+      comment = "Health Risk! Consult a doctor & start workout immediately.";
     }
 
     return ResultScreen(
@@ -59,84 +57,90 @@ class ResultScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kScaffoldBackground,
-      appBar: AppBar(
-        backgroundColor: kAppBarColor,
-        title: const Text(
-          "Your Result",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF1A1A2E), Color(0xFF0F0F1F)],
+          ),
         ),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 40),
-
-            // Result Text (Normal / Overweight etc.)
-            Text(
-              resultText,
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: resultColor,
-              ),
-            ),
-
-            const SizedBox(height: 40),
-
-            // Big BMI Number
-            Text(
-              bmi.toStringAsFixed(1),
-              style: const TextStyle(
-                fontSize: 100,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-
-            const SizedBox(height: 40),
-
-            // Feedback Comment
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Text(
-                feedback,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 20,
-                  color: Colors.white70,
-                  height: 1.5,
+        child: SafeArea(
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(top: 30),
+                child: Text(
+                  "Your Result",
+                  style: TextStyle(fontSize: 38, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ),
-            ),
-
-            const Spacer(),
-
-            // ReCalculate Button
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context); // wapas BMIScreen pe
-              },
-              child: Container(
-                height: 70,
-                width: double.infinity,
-                color: Colors.redAccent,
-                child: const Center(
-                  child: Text(
-                    "ReCalculate",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: kActiveColor.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(25),
+                      boxShadow: [
+                        BoxShadow(color: Colors.black26, blurRadius: 20, offset: Offset(0, 10)),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        CircularPercentIndicator(
+                          radius: 100,
+                          lineWidth: 16,
+                          animation: true,
+                          percent: bmi / 40 > 1.0 ? 1.0 : bmi / 40,
+                          center: Text(
+                            bmi.toStringAsFixed(1),
+                            style: const TextStyle(fontSize: 70, fontWeight: FontWeight.bold, color: Colors.white),
+                          ),
+                          progressColor: resultColor,
+                          backgroundColor: Colors.white24,
+                          circularStrokeCap: CircularStrokeCap.round,
+                        ),
+                        Text(
+                          resultText,
+                          style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold, color: resultColor),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          child: Text(
+                            feedback,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontSize: 22, color: Colors.white70, height: 1.6),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+              // ReCalculate Button
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    height: 80,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(colors: [Colors.redAccent, Colors.pinkAccent]),
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        "RE-CALCULATE",
+                        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
