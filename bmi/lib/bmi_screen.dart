@@ -42,9 +42,7 @@ class _BMIScreenState extends State<BMIScreen> {
               child: Column(
                 children: [
 
-                  // ------------------------------------------------------
-                  // ROW 1 — MALE + FEMALE
-                  // ------------------------------------------------------
+                  // ------------------ MALE + FEMALE ------------------
                   Expanded(
                     child: Row(
                       children: [
@@ -58,9 +56,7 @@ class _BMIScreenState extends State<BMIScreen> {
                             onPressed: () => selectGender(Gender.male),
                           ),
                         ),
-
                         const SizedBox(width: 15),
-
                         Expanded(
                           child: RepeatTextAndIconWidget(
                             title: "FEMALE",
@@ -77,9 +73,7 @@ class _BMIScreenState extends State<BMIScreen> {
 
                   const SizedBox(height: 15),
 
-                  // ------------------------------------------------------
-                  // ROW 2 — HEIGHT + SLIDER
-                  // ------------------------------------------------------
+                  // ------------------ HEIGHT BOX ------------------
                   Expanded(
                     child: RepeatContainerCode(
                       child: Column(
@@ -131,14 +125,11 @@ class _BMIScreenState extends State<BMIScreen> {
 
                   const SizedBox(height: 15),
 
-                  // ------------------------------------------------------
-                  // ROW 3 — WEIGHT + AGE BOXES
-                  // ------------------------------------------------------
+                  // ------------------ WEIGHT + AGE ------------------
                   Expanded(
                     child: Row(
                       children: [
-
-                        // ------------------ WEIGHT --------------------
+                        // WEIGHT
                         Expanded(
                           child: RepeatContainerCode(
                             child: Column(
@@ -151,9 +142,7 @@ class _BMIScreenState extends State<BMIScreen> {
                                     fontSize: 18,
                                   ),
                                 ),
-
                                 const SizedBox(height: 8),
-
                                 Text(
                                   "$weight",
                                   style: const TextStyle(
@@ -162,14 +151,10 @@ class _BMIScreenState extends State<BMIScreen> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-
                                 const SizedBox(height: 10),
-
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-
-                                    // MINUS BUTTON
                                     GestureDetector(
                                       onTap: () {
                                         setState(() {
@@ -179,13 +164,11 @@ class _BMIScreenState extends State<BMIScreen> {
                                       child: const CircleAvatar(
                                         radius: 22,
                                         backgroundColor: Colors.grey,
-                                        child: Icon(Icons.remove, color: Colors.white),
+                                        child: Icon(Icons.remove,
+                                            color: Colors.white),
                                       ),
                                     ),
-
                                     const SizedBox(width: 15),
-
-                                    // PLUS BUTTON
                                     GestureDetector(
                                       onTap: () {
                                         setState(() {
@@ -195,7 +178,8 @@ class _BMIScreenState extends State<BMIScreen> {
                                       child: const CircleAvatar(
                                         radius: 22,
                                         backgroundColor: Colors.grey,
-                                        child: Icon(Icons.add, color: Colors.white),
+                                        child:
+                                        Icon(Icons.add, color: Colors.white),
                                       ),
                                     ),
                                   ],
@@ -207,7 +191,7 @@ class _BMIScreenState extends State<BMIScreen> {
 
                         const SizedBox(width: 15),
 
-                        // ------------------ AGE --------------------
+                        // AGE
                         Expanded(
                           child: RepeatContainerCode(
                             child: Column(
@@ -220,9 +204,7 @@ class _BMIScreenState extends State<BMIScreen> {
                                     fontSize: 18,
                                   ),
                                 ),
-
                                 const SizedBox(height: 8),
-
                                 Text(
                                   "$age",
                                   style: const TextStyle(
@@ -231,14 +213,10 @@ class _BMIScreenState extends State<BMIScreen> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-
                                 const SizedBox(height: 10),
-
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-
-                                    // MINUS BUTTON
                                     GestureDetector(
                                       onTap: () {
                                         setState(() {
@@ -248,13 +226,11 @@ class _BMIScreenState extends State<BMIScreen> {
                                       child: const CircleAvatar(
                                         radius: 22,
                                         backgroundColor: Colors.grey,
-                                        child: Icon(Icons.remove, color: Colors.white),
+                                        child: Icon(Icons.remove,
+                                            color: Colors.white),
                                       ),
                                     ),
-
                                     const SizedBox(width: 15),
-
-                                    // PLUS BUTTON
                                     GestureDetector(
                                       onTap: () {
                                         setState(() {
@@ -264,7 +240,8 @@ class _BMIScreenState extends State<BMIScreen> {
                                       child: const CircleAvatar(
                                         radius: 22,
                                         backgroundColor: Colors.grey,
-                                        child: Icon(Icons.add, color: Colors.white),
+                                        child:
+                                        Icon(Icons.add, color: Colors.white),
                                       ),
                                     ),
                                   ],
@@ -282,23 +259,13 @@ class _BMIScreenState extends State<BMIScreen> {
           ),
 
           // ------------------------------------------------------
-          // BOTTOM RED BUTTON
+          // ONLY RED CONTAINER (no text)
           // ------------------------------------------------------
           Container(
             height: 70,
             width: double.infinity,
             color: Colors.redAccent,
-            child: const Center(
-              child: Text(
-                "CALCULATE BMI",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          )
+          ),
         ],
       ),
     );
