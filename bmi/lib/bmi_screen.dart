@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
 import 'IconTextFile.dart';
 import 'ContainerFile.dart';
-class BMIScreen extends StatelessWidget {
+
+class BMIScreen extends StatefulWidget {
   const BMIScreen({super.key});
+
+  @override
+  State<BMIScreen> createState() => _BMIScreenState();
+}
+
+class _BMIScreenState extends State<BMIScreen> {
+  // ----------------------------------------------------------
+  // 🔵 ACTIVE / DEACTIVE COLOR LOGIC
+  // ----------------------------------------------------------
+  Color activeColor = const Color(0xFF3D3D5C);
+  Color deActiveColor = const Color(0xFF1E1E2F);
+
+  bool isMale = true; // Default male selected
 
   @override
   Widget build(BuildContext context) {
@@ -22,18 +36,39 @@ class BMIScreen extends StatelessWidget {
             // ----------------------------------------
             Expanded(
               child: Row(
-                children: const [
+                children: [
+
+                  // ------------------ MALE BOX ------------------
                   Expanded(
-                    child: RepeatTextAndIconWidget(
-                      title: "MALE",
-                      icon: Icons.male,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isMale = true;
+                        });
+                      },
+                      child: RepeatTextAndIconWidget(
+                        title: "MALE",
+                        icon: Icons.male,
+                        boxColor: isMale ? activeColor : deActiveColor,
+                      ),
                     ),
                   ),
-                  SizedBox(width: 15),
+
+                  const SizedBox(width: 15),
+
+                  // ----------------- FEMALE BOX ------------------
                   Expanded(
-                    child: RepeatTextAndIconWidget(
-                      title: "FEMALE",
-                      icon: Icons.female,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isMale = false;
+                        });
+                      },
+                      child: RepeatTextAndIconWidget(
+                        title: "FEMALE",
+                        icon: Icons.female,
+                        boxColor: isMale ? deActiveColor : activeColor,
+                      ),
                     ),
                   ),
                 ],
@@ -69,6 +104,3 @@ class BMIScreen extends StatelessWidget {
     );
   }
 }
-
-
-
