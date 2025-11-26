@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'ConstantFile.dart';
 
 class RepeatTextAndIconWidget extends StatelessWidget {
   final String title;
@@ -17,7 +18,7 @@ class RepeatTextAndIconWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onPressed,   // callback here
+      onTap: onPressed,
       child: Container(
         decoration: BoxDecoration(
           color: boxColor,
@@ -28,18 +29,11 @@ class RepeatTextAndIconWidget extends StatelessWidget {
           children: [
             Icon(icon, size: 60, color: Colors.white),
             const SizedBox(height: 10),
-            Text(
-              title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1,
-              ),
-            ),
+            Text(title, style: kWhiteTextStyle),
           ],
         ),
       ),
     );
   }
 }
+

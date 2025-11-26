@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'bmi_screen.dart';
+import 'ConstantFile.dart';
 
 void main() {
   runApp(const BMIApp());
@@ -14,7 +15,7 @@ class BMIApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "BMI Calculator",
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF0F0F1F),
+        scaffoldBackgroundColor: kScaffoldBackground,
       ),
       home: const BMIScreen(),
     );

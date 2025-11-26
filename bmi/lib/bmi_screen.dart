@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'IconTextFile.dart';
 import 'ContainerFile.dart';
+import 'ConstantFile.dart';
 
 enum Gender { male, female }
 
@@ -14,11 +15,8 @@ class BMIScreen extends StatefulWidget {
 class _BMIScreenState extends State<BMIScreen> {
   Gender selectedGender = Gender.male;
 
-  final Color activeColor = const Color(0xFF3D3D5C);
-  final Color deActiveColor = const Color(0xFF1E1E2F);
-
   // ------------------------------
-  // 🔵 COMMON FUNCTION FOR MALE/FEMALE PRESS
+  // 🔵 COMMON FUNCTION
   // ------------------------------
   void selectGender(Gender gender) {
     setState(() {
@@ -30,7 +28,7 @@ class _BMIScreenState extends State<BMIScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1A1A2E),
+        backgroundColor: kAppBarColor,
         title: const Text("BMI CALCULATOR"),
       ),
 
@@ -39,9 +37,7 @@ class _BMIScreenState extends State<BMIScreen> {
         child: Column(
           children: [
 
-            // ------------------------------------------------------
-            // ROW 1 — MALE + FEMALE
-            // ------------------------------------------------------
+            // MALE & FEMALE
             Expanded(
               child: Row(
                 children: [
@@ -51,8 +47,8 @@ class _BMIScreenState extends State<BMIScreen> {
                       title: "MALE",
                       icon: Icons.male,
                       boxColor: selectedGender == Gender.male
-                          ? activeColor
-                          : deActiveColor,
+                          ? kActiveColor
+                          : kDeActiveColor,
                       onPressed: () => selectGender(Gender.male),
                     ),
                   ),
@@ -64,8 +60,8 @@ class _BMIScreenState extends State<BMIScreen> {
                       title: "FEMALE",
                       icon: Icons.female,
                       boxColor: selectedGender == Gender.female
-                          ? activeColor
-                          : deActiveColor,
+                          ? kActiveColor
+                          : kDeActiveColor,
                       onPressed: () => selectGender(Gender.female),
                     ),
                   ),
@@ -75,12 +71,20 @@ class _BMIScreenState extends State<BMIScreen> {
 
             const SizedBox(height: 15),
 
-            const Expanded(
-              child: RepeatContainerCode(),
+            // ------------------------------
+            // ROW 2 → HEIGHT TEXT
+            // ------------------------------
+            Expanded(
+              child: RepeatContainerCode(
+                child: Center(
+                  child: Text("HEIGHT", style: kHeightTextStyle),
+                ),
+              ),
             ),
 
             const SizedBox(height: 15),
 
+            // LAST ROW (unchanged)
             Expanded(
               child: Row(
                 children: const [
