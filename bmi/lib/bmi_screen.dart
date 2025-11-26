@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'IconTextFile.dart';
 import 'ContainerFile.dart';
 
-// ----------------------------------------------------------
-// 🔵 ENUM FOR GENDER
-// ----------------------------------------------------------
+// ENUM FOR GENDER
 enum Gender { male, female }
 
 class BMIScreen extends StatefulWidget {
@@ -15,12 +13,10 @@ class BMIScreen extends StatefulWidget {
 }
 
 class _BMIScreenState extends State<BMIScreen> {
-  // ACTIVE / DEACTIVE COLORS
+  Gender selectedGender = Gender.male;
+
   final Color activeColor = const Color(0xFF3D3D5C);
   final Color deActiveColor = const Color(0xFF1E1E2F);
-
-  // DEFAULT SELECTED GENDER
-  Gender selectedGender = Gender.male;
 
   @override
   Widget build(BuildContext context) {
@@ -35,14 +31,14 @@ class _BMIScreenState extends State<BMIScreen> {
         child: Column(
           children: [
 
-            // ----------------------------------------------------
-            // ROW 1 → MALE / FEMALE
-            // ----------------------------------------------------
+            // ------------------------------------------------------
+            // ROW 1 — MALE + FEMALE (TERNARY OPERATOR)
+            // ------------------------------------------------------
             Expanded(
               child: Row(
                 children: [
 
-                  // -------------------- MALE --------------------
+                  // ---------------- MALE BOX ----------------
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
@@ -53,6 +49,8 @@ class _BMIScreenState extends State<BMIScreen> {
                       child: RepeatTextAndIconWidget(
                         title: "MALE",
                         icon: Icons.male,
+
+                        // TERNARY HERE ✔
                         boxColor: selectedGender == Gender.male
                             ? activeColor
                             : deActiveColor,
@@ -62,7 +60,7 @@ class _BMIScreenState extends State<BMIScreen> {
 
                   const SizedBox(width: 15),
 
-                  // ------------------- FEMALE -------------------
+                  // ---------------- FEMALE BOX ----------------
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
@@ -73,6 +71,8 @@ class _BMIScreenState extends State<BMIScreen> {
                       child: RepeatTextAndIconWidget(
                         title: "FEMALE",
                         icon: Icons.female,
+
+                        // TERNARY HERE ✔
                         boxColor: selectedGender == Gender.female
                             ? activeColor
                             : deActiveColor,
@@ -85,18 +85,12 @@ class _BMIScreenState extends State<BMIScreen> {
 
             const SizedBox(height: 15),
 
-            // ----------------------------------------------------
-            // ROW 2 → EMPTY BOX
-            // ----------------------------------------------------
             const Expanded(
               child: RepeatContainerCode(),
             ),
 
             const SizedBox(height: 15),
 
-            // ----------------------------------------------------
-            // ROW 3 → TWO EMPTY BOXES
-            // ----------------------------------------------------
             Expanded(
               child: Row(
                 children: const [

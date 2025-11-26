@@ -16,7 +16,7 @@ class RepeatTextAndIconWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: boxColor,
+        color: boxColor,     // <-- Ternary se jo color aaye wo ayega
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
