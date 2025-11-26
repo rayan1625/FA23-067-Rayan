@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'IconTextFile.dart';
 import 'ContainerFile.dart';
 import 'ConstantFile.dart';
-import 'result_screen.dart';          // YEH IMPORT ADD KIYA HAI
+import 'result_screen.dart'; // Yeh import zaroori hai
 
 enum Gender { male, female }
 
@@ -31,17 +31,16 @@ class _BMIScreenState extends State<BMIScreen> {
       appBar: AppBar(
         backgroundColor: kAppBarColor,
         title: const Text("BMI CALCULATOR"),
+        centerTitle: true,
       ),
       body: Column(
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(15),
+              padding: const EdgeInsets.all(15.0),
               child: Column(
                 children: [
-                  // ------------------------------------------------------
-                  // ROW 1 — MALE + FEMALE
-                  // ------------------------------------------------------
+                  // ==================== ROW 1: MALE / FEMALE ====================
                   Expanded(
                     child: Row(
                       children: [
@@ -71,9 +70,7 @@ class _BMIScreenState extends State<BMIScreen> {
                   ),
                   const SizedBox(height: 15),
 
-                  // ------------------------------------------------------
-                  // ROW 2 — HEIGHT + SLIDER
-                  // ------------------------------------------------------
+                  // ==================== ROW 2: HEIGHT SLIDER ====================
                   Expanded(
                     child: RepeatContainerCode(
                       child: Column(
@@ -88,23 +85,19 @@ class _BMIScreenState extends State<BMIScreen> {
                               Text(
                                 height.toString(),
                                 style: const TextStyle(
-                                  fontSize: 45,
-                                  color: Colors.white,
+                                  fontSize: 50,
                                   fontWeight: FontWeight.bold,
+                                  color: Colors.white,
                                 ),
                               ),
-                              const SizedBox(width: 5),
                               const Text(
-                                "cm",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white70,
-                                ),
+                                " cm",
+                                style: TextStyle(fontSize: 20, color: Colors.white70),
                               ),
                             ],
                           ),
                           Slider(
-                            min: 80,
+                            min: 120,
                             max: 220,
                             activeColor: Colors.pinkAccent,
                             inactiveColor: Colors.grey,
@@ -121,63 +114,46 @@ class _BMIScreenState extends State<BMIScreen> {
                   ),
                   const SizedBox(height: 15),
 
-                  // ------------------------------------------------------
-                  // ROW 3 — WEIGHT + AGE BOXES
-                  // ------------------------------------------------------
+                  // ==================== ROW 3: WEIGHT + AGE ====================
                   Expanded(
                     child: Row(
                       children: [
-                        // ------------------ WEIGHT --------------------
+                        // WEIGHT
                         Expanded(
                           child: RepeatContainerCode(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Text(
-                                  "WEIGHT",
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 18,
-                                  ),
-                                ),
+                                const Text("WEIGHT", style: TextStyle(fontSize: 18, color: Colors.white70)),
                                 const SizedBox(height: 8),
-                                Text(
-                                  "$weight",
-                                  style: const TextStyle(
-                                    fontSize: 40,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
+                                Text("$weight", style: const TextStyle(fontSize: 50, fontWeight: FontWeight.bold, color: Colors.white)),
+                                const SizedBox(height: 15),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          if (weight > 1) weight--;
-                                        });
-                                      },
-                                      child: const CircleAvatar(
-                                        radius: 22,
-                                        backgroundColor: Colors.grey,
-                                        child: Icon(Icons.remove,
-                                            color: Colors.white),
+                                    CircleAvatar(
+                                      radius: 25,
+                                      backgroundColor: Colors.grey[800],
+                                      child: IconButton(
+                                        icon: const Icon(Icons.remove, color: Colors.white),
+                                        onPressed: () {
+                                          setState(() {
+                                            if (weight > 20) weight--;
+                                          });
+                                        },
                                       ),
                                     ),
-                                    const SizedBox(width: 15),
-                                    GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          weight++;
-                                        });
-                                      },
-                                      child: const CircleAvatar(
-                                        radius: 22,
-                                        backgroundColor: Colors.grey,
-                                        child: Icon(Icons.add,
-                                            color: Colors.white),
+                                    const SizedBox(width: 20),
+                                    CircleAvatar(
+                                      radius: 25,
+                                      backgroundColor: Colors.grey[800],
+                                      child: IconButton(
+                                        icon: const Icon(Icons.add, color: Colors.white),
+                                        onPressed: () {
+                                          setState(() {
+                                            weight++;
+                                          });
+                                        },
                                       ),
                                     ),
                                   ],
@@ -187,58 +163,42 @@ class _BMIScreenState extends State<BMIScreen> {
                           ),
                         ),
                         const SizedBox(width: 15),
-
-                        // ------------------ AGE --------------------
+                        // AGE
                         Expanded(
                           child: RepeatContainerCode(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Text(
-                                  "AGE",
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 18,
-                                  ),
-                                ),
+                                const Text("AGE", style: TextStyle(fontSize: 18, color: Colors.white70)),
                                 const SizedBox(height: 8),
-                                Text(
-                                  "$age",
-                                  style: const TextStyle(
-                                    fontSize: 40,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
+                                Text("$age", style: const TextStyle(fontSize: 50, fontWeight: FontWeight.bold, color: Colors.white)),
+                                const SizedBox(height: 15),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          if (age > 1) age--;
-                                        });
-                                      },
-                                      child: const CircleAvatar(
-                                        radius: 22,
-                                        backgroundColor: Colors.grey,
-                                        child: Icon(Icons.remove,
-                                            color: Colors.white),
+                                    CircleAvatar(
+                                      radius: 25,
+                                      backgroundColor: Colors.grey[800],
+                                      child: IconButton(
+                                        icon: const Icon(Icons.remove, color: Colors.white),
+                                        onPressed: () {
+                                          setState(() {
+                                            if (age > 1) age--;
+                                          });
+                                        },
                                       ),
                                     ),
-                                    const SizedBox(width: 15),
-                                    GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          age++;
-                                        });
-                                      },
-                                      child: const CircleAvatar(
-                                        radius: 22,
-                                        backgroundColor: Colors.grey,
-                                        child: Icon(Icons.add,
-                                            color: Colors.white),
+                                    const SizedBox(width: 20),
+                                    CircleAvatar(
+                                      radius: 25,
+                                      backgroundColor: Colors.grey[800],
+                                      child: IconButton(
+                                        icon: const Icon(Icons.add, color: Colors.white),
+                                        onPressed: () {
+                                          setState(() {
+                                            age++;
+                                          });
+                                        },
                                       ),
                                     ),
                                   ],
@@ -255,20 +215,24 @@ class _BMIScreenState extends State<BMIScreen> {
             ),
           ),
 
-          // ------------------------------------------------------
-          // BOTTOM RED BUTTON → AB NAVIGATE KAREGA
-          // ------------------------------------------------------
+          // ==================== CALCULATE BMI BUTTON ====================
           GestureDetector(
             onTap: () {
+              // Yahan BMI calculate hota hai aur ResultScreen khulta hai
+              final result = ResultScreen.calculateBMI(
+                weight: weight,
+                height: height,
+                age: age,
+                gender: selectedGender,
+              );
+
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const ResultScreen(),
-                ),
+                MaterialPageRoute(builder: (context) => result),
               );
             },
             child: Container(
-              height: 70,
+              height: 80,
               width: double.infinity,
               color: Colors.redAccent,
               child: const Center(
@@ -276,7 +240,7 @@ class _BMIScreenState extends State<BMIScreen> {
                   "CALCULATE BMI",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 22,
+                    fontSize: 28,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
