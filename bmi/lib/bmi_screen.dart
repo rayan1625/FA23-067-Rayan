@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'IconTextFile.dart';
 import 'ContainerFile.dart';
 import 'ConstantFile.dart';
+import 'result_screen.dart';          // YEH IMPORT ADD KIYA HAI
 
 enum Gender { male, female }
 
@@ -14,7 +15,6 @@ class BMIScreen extends StatefulWidget {
 
 class _BMIScreenState extends State<BMIScreen> {
   Gender selectedGender = Gender.male;
-
   int height = 180;
   int weight = 60;
   int age = 20;
@@ -32,17 +32,16 @@ class _BMIScreenState extends State<BMIScreen> {
         backgroundColor: kAppBarColor,
         title: const Text("BMI CALCULATOR"),
       ),
-
       body: Column(
         children: [
-
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(15),
               child: Column(
                 children: [
-
-                  // ------------------ MALE + FEMALE ------------------
+                  // ------------------------------------------------------
+                  // ROW 1 — MALE + FEMALE
+                  // ------------------------------------------------------
                   Expanded(
                     child: Row(
                       children: [
@@ -70,19 +69,18 @@ class _BMIScreenState extends State<BMIScreen> {
                       ],
                     ),
                   ),
-
                   const SizedBox(height: 15),
 
-                  // ------------------ HEIGHT BOX ------------------
+                  // ------------------------------------------------------
+                  // ROW 2 — HEIGHT + SLIDER
+                  // ------------------------------------------------------
                   Expanded(
                     child: RepeatContainerCode(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("HEIGHT", style: kHeightTextStyle),
-
+                          const Text("HEIGHT", style: kHeightTextStyle),
                           const SizedBox(height: 10),
-
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -105,7 +103,6 @@ class _BMIScreenState extends State<BMIScreen> {
                               ),
                             ],
                           ),
-
                           Slider(
                             min: 80,
                             max: 220,
@@ -122,14 +119,15 @@ class _BMIScreenState extends State<BMIScreen> {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 15),
 
-                  // ------------------ WEIGHT + AGE ------------------
+                  // ------------------------------------------------------
+                  // ROW 3 — WEIGHT + AGE BOXES
+                  // ------------------------------------------------------
                   Expanded(
                     child: Row(
                       children: [
-                        // WEIGHT
+                        // ------------------ WEIGHT --------------------
                         Expanded(
                           child: RepeatContainerCode(
                             child: Column(
@@ -178,8 +176,8 @@ class _BMIScreenState extends State<BMIScreen> {
                                       child: const CircleAvatar(
                                         radius: 22,
                                         backgroundColor: Colors.grey,
-                                        child:
-                                        Icon(Icons.add, color: Colors.white),
+                                        child: Icon(Icons.add,
+                                            color: Colors.white),
                                       ),
                                     ),
                                   ],
@@ -188,10 +186,9 @@ class _BMIScreenState extends State<BMIScreen> {
                             ),
                           ),
                         ),
-
                         const SizedBox(width: 15),
 
-                        // AGE
+                        // ------------------ AGE --------------------
                         Expanded(
                           child: RepeatContainerCode(
                             child: Column(
@@ -240,8 +237,8 @@ class _BMIScreenState extends State<BMIScreen> {
                                       child: const CircleAvatar(
                                         radius: 22,
                                         backgroundColor: Colors.grey,
-                                        child:
-                                        Icon(Icons.add, color: Colors.white),
+                                        child: Icon(Icons.add,
+                                            color: Colors.white),
                                       ),
                                     ),
                                   ],
@@ -259,12 +256,32 @@ class _BMIScreenState extends State<BMIScreen> {
           ),
 
           // ------------------------------------------------------
-          // ONLY RED CONTAINER (no text)
+          // BOTTOM RED BUTTON → AB NAVIGATE KAREGA
           // ------------------------------------------------------
-          Container(
-            height: 70,
-            width: double.infinity,
-            color: Colors.redAccent,
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ResultScreen(),
+                ),
+              );
+            },
+            child: Container(
+              height: 70,
+              width: double.infinity,
+              color: Colors.redAccent,
+              child: const Center(
+                child: Text(
+                  "CALCULATE BMI",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),
