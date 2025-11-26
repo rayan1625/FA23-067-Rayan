@@ -15,9 +15,8 @@ class BMIScreen extends StatefulWidget {
 class _BMIScreenState extends State<BMIScreen> {
   Gender selectedGender = Gender.male;
 
-  // ------------------------------
-  // 🔵 COMMON FUNCTION
-  // ------------------------------
+  int height = 180; // HEIGHT VALUE
+
   void selectGender(Gender gender) {
     setState(() {
       selectedGender = gender;
@@ -37,11 +36,12 @@ class _BMIScreenState extends State<BMIScreen> {
         child: Column(
           children: [
 
-            // MALE & FEMALE
+            // ------------------------------------------------------
+            // ROW 1 — MALE + FEMALE
+            // ------------------------------------------------------
             Expanded(
               child: Row(
                 children: [
-
                   Expanded(
                     child: RepeatTextAndIconWidget(
                       title: "MALE",
@@ -71,26 +71,73 @@ class _BMIScreenState extends State<BMIScreen> {
 
             const SizedBox(height: 15),
 
-            // ------------------------------
-            // ROW 2 → HEIGHT TEXT
-            // ------------------------------
+            // ------------------------------------------------------
+            // ROW 2 — HEIGHT + SLIDER
+            // ------------------------------------------------------
             Expanded(
               child: RepeatContainerCode(
-                child: Center(
-                  child: Text("HEIGHT", style: kHeightTextStyle),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("HEIGHT", style: kHeightTextStyle),
+
+                    const SizedBox(height: 10),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          height.toString(),
+                          style: const TextStyle(
+                            fontSize: 45,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        const Text(
+                          "cm",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white70,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Slider(
+                      min: 80,
+                      max: 220,
+                      value: height.toDouble(),
+                      activeColor: Colors.pinkAccent,
+                      inactiveColor: Colors.grey,
+                      onChanged: (double newValue) {
+                        setState(() {
+                          height = newValue.round();
+                        });
+                      },
+                    )
+                  ],
                 ),
               ),
             ),
 
             const SizedBox(height: 15),
 
-            // LAST ROW (unchanged)
+            // ------------------------------------------------------
+            // ROW 3 — 2 EMPTY BOXES
+            // ------------------------------------------------------
             Expanded(
               child: Row(
                 children: const [
-                  Expanded(child: RepeatContainerCode()),
+                  Expanded(
+                    child: RepeatContainerCode(),
+                  ),
                   SizedBox(width: 15),
-                  Expanded(child: RepeatContainerCode()),
+                  Expanded(
+                    child: RepeatContainerCode(),
+                  ),
                 ],
               ),
             ),
