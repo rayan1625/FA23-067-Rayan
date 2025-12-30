@@ -3,21 +3,19 @@ import 'bmi_screen.dart';
 import 'ConstantFile.dart';
 
 void main() {
-  runApp(const BMIApp());
+  runApp(BMIApp());
 }
 
 class BMIApp extends StatelessWidget {
-  const BMIApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "BMI Calculator",
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: kScaffoldBackground,
+        scaffoldBackgroundColor: kBackground,
+        primaryColor: kPrimary,
       ),
-      home: const BMIScreen(),
+      home: BMIScreen(),
     );
   }
 }

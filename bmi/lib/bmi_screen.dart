@@ -1,213 +1,112 @@
+// lib/bmi_screen.dart
+
 import 'package:flutter/material.dart';
 import 'IconTextFile.dart';
 import 'ContainerFile.dart';
 import 'ConstantFile.dart';
-import 'result_screen.dart'; // Yeh import zaroori hai
+import 'result_screen.dart';
 
 enum Gender { male, female }
 
 class BMIScreen extends StatefulWidget {
   const BMIScreen({super.key});
-
   @override
   State<BMIScreen> createState() => _BMIScreenState();
 }
 
 class _BMIScreenState extends State<BMIScreen> {
-  Gender selectedGender = Gender.male;
+  Gender? selectedGender = Gender.male; // Pehle se male selected rahega
   int height = 180;
   int weight = 60;
-  int age = 20;
-
-  void selectGender(Gender gender) {
-    setState(() {
-      selectedGender = gender;
-    });
-  }
+  int age = 25;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kBackground,
       appBar: AppBar(
-        backgroundColor: kAppBarColor,
-        title: const Text("BMI CALCULATOR"),
+        title: const Text(
+          "BMI CALCULATOR",
+          style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1),
+        ),
         centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        foregroundColor: Colors.white,
       ),
       body: Column(
         children: [
+          // ==================== GENDER SELECTION ====================
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: ReusableCard(
+                    child: GenderCard(
+                      icon: Icons.male,
+                      label: "MALE",
+                      isSelected: selectedGender == Gender.male,
+                      onTap: () {
+                        setState(() {
+                          selectedGender = Gender.male;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ReusableCard(
+                    child: GenderCard(
+                      icon: Icons.female,
+                      label: "FEMALE",
+                      isSelected: selectedGender == Gender.female,
+                      onTap: () {
+                        setState(() {
+                          selectedGender = Gender.female;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // ==================== HEIGHT SLIDER ====================
+          Expanded(
+            child: ReusableCard(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // ==================== ROW 1: MALE / FEMALE ====================
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: RepeatTextAndIconWidget(
-                            title: "MALE",
-                            icon: Icons.male,
-                            boxColor: selectedGender == Gender.male
-                                ? kActiveColor
-                                : kDeActiveColor,
-                            onPressed: () => selectGender(Gender.male),
-                          ),
-                        ),
-                        const SizedBox(width: 15),
-                        Expanded(
-                          child: RepeatTextAndIconWidget(
-                            title: "FEMALE",
-                            icon: Icons.female,
-                            boxColor: selectedGender == Gender.female
-                                ? kActiveColor
-                                : kDeActiveColor,
-                            onPressed: () => selectGender(Gender.female),
-                          ),
-                        ),
-                      ],
-                    ),
+                  Text("HEIGHT", style: kLabelTextStyle),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: [
+                      Text(height.toString(), style: kNumberTextStyle),
+                      Text(" cm", style: kLabelTextStyle.copyWith(fontSize: 20)),
+                    ],
                   ),
-                  const SizedBox(height: 15),
-
-                  // ==================== ROW 2: HEIGHT SLIDER ====================
-                  Expanded(
-                    child: RepeatContainerCode(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text("HEIGHT", style: kHeightTextStyle),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                height.toString(),
-                                style: const TextStyle(
-                                  fontSize: 50,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const Text(
-                                " cm",
-                                style: TextStyle(fontSize: 20, color: Colors.white70),
-                              ),
-                            ],
-                          ),
-                          Slider(
-                            min: 120,
-                            max: 220,
-                            activeColor: Colors.pinkAccent,
-                            inactiveColor: Colors.grey,
-                            value: height.toDouble(),
-                            onChanged: (value) {
-                              setState(() {
-                                height = value.round();
-                              });
-                            },
-                          ),
-                        ],
-                      ),
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      activeTrackColor: Colors.pinkAccent,
+                      inactiveTrackColor: Colors.grey,
+                      thumbColor: Colors.pink,
+                      overlayColor: Colors.pink.withOpacity(0.2),
+                      thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 16),
+                      overlayShape: const RoundSliderOverlayShape(overlayRadius: 32),
                     ),
-                  ),
-                  const SizedBox(height: 15),
-
-                  // ==================== ROW 3: WEIGHT + AGE ====================
-                  Expanded(
-                    child: Row(
-                      children: [
-                        // WEIGHT
-                        Expanded(
-                          child: RepeatContainerCode(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text("WEIGHT", style: TextStyle(fontSize: 18, color: Colors.white70)),
-                                const SizedBox(height: 8),
-                                Text("$weight", style: const TextStyle(fontSize: 50, fontWeight: FontWeight.bold, color: Colors.white)),
-                                const SizedBox(height: 15),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 25,
-                                      backgroundColor: Colors.grey[800],
-                                      child: IconButton(
-                                        icon: const Icon(Icons.remove, color: Colors.white),
-                                        onPressed: () {
-                                          setState(() {
-                                            if (weight > 20) weight--;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                    const SizedBox(width: 20),
-                                    CircleAvatar(
-                                      radius: 25,
-                                      backgroundColor: Colors.grey[800],
-                                      child: IconButton(
-                                        icon: const Icon(Icons.add, color: Colors.white),
-                                        onPressed: () {
-                                          setState(() {
-                                            weight++;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 15),
-                        // AGE
-                        Expanded(
-                          child: RepeatContainerCode(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text("AGE", style: TextStyle(fontSize: 18, color: Colors.white70)),
-                                const SizedBox(height: 8),
-                                Text("$age", style: const TextStyle(fontSize: 50, fontWeight: FontWeight.bold, color: Colors.white)),
-                                const SizedBox(height: 15),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 25,
-                                      backgroundColor: Colors.grey[800],
-                                      child: IconButton(
-                                        icon: const Icon(Icons.remove, color: Colors.white),
-                                        onPressed: () {
-                                          setState(() {
-                                            if (age > 1) age--;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                    const SizedBox(width: 20),
-                                    CircleAvatar(
-                                      radius: 25,
-                                      backgroundColor: Colors.grey[800],
-                                      child: IconButton(
-                                        icon: const Icon(Icons.add, color: Colors.white),
-                                        onPressed: () {
-                                          setState(() {
-                                            age++;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                    child: Slider(
+                      value: height.toDouble(),
+                      min: 120,
+                      max: 220,
+                      onChanged: (double value) {
+                        setState(() {
+                          height = value.round();
+                        });
+                      },
                     ),
                   ),
                 ],
@@ -215,34 +114,118 @@ class _BMIScreenState extends State<BMIScreen> {
             ),
           ),
 
-          // ==================== CALCULATE BMI BUTTON ====================
+          // ==================== WEIGHT & AGE ====================
+          Expanded(
+            child: Row(
+              children: [
+                // WEIGHT
+                Expanded(
+                  child: ReusableCard(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("WEIGHT", style: kLabelTextStyle),
+                        Text(weight.toString(), style: kNumberTextStyle),
+                        const SizedBox(height: 15),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            FloatingActionButton(
+                              heroTag: "weight_minus",
+                              backgroundColor: kBottomColor,
+                              child: const Icon(Icons.remove, size: 30),
+                              onPressed: () {
+                                setState(() {
+                                  if (weight > 20) weight--;
+                                });
+                              },
+                            ),
+                            const SizedBox(width: 25),
+                            FloatingActionButton(
+                              heroTag: "weight_plus",
+                              backgroundColor: kBottomColor,
+                              child: const Icon(Icons.add, size: 30),
+                              onPressed: () {
+                                setState(() {
+                                  weight++;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // AGE
+                Expanded(
+                  child: ReusableCard(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("AGE", style: kLabelTextStyle),
+                        Text(age.toString(), style: kNumberTextStyle),
+                        const SizedBox(height: 15),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            FloatingActionButton(
+                              heroTag: "age_minus",
+                              backgroundColor: kBottomColor,
+                              child: const Icon(Icons.remove, size: 30),
+                              onPressed: () {
+                                setState(() {
+                                  if (age > 1) age--;
+                                });
+                              },
+                            ),
+                            const SizedBox(width: 25),
+                            FloatingActionButton(
+                              heroTag: "age_plus",
+                              backgroundColor: kBottomColor,
+                              child: const Icon(Icons.add, size: 30),
+                              onPressed: () {
+                                setState(() {
+                                  age++;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // ==================== CALCULATE BUTTON ====================
           GestureDetector(
             onTap: () {
-              // Yahan BMI calculate hota hai aur ResultScreen khulta hai
-              final result = ResultScreen.calculateBMI(
+              final resultScreen = ResultScreen.calculate(
                 weight: weight,
                 height: height,
-                age: age,
-                gender: selectedGender,
               );
-
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => result),
+                MaterialPageRoute(builder: (context) => resultScreen),
               );
             },
             child: Container(
               height: 80,
               width: double.infinity,
-              color: Colors.redAccent,
-              child: const Center(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.pinkAccent, Colors.redAccent],
+                ),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
+              ),
+              child: Center(
                 child: Text(
-                  "CALCULATE BMI",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  "CALCULATE YOUR BMI",
+                  style: kLargeButtonTextStyle.copyWith(letterSpacing: 2),
                 ),
               ),
             ),
