@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../models/product.dart';
 import '../../providers/product_provider.dart';
 import 'add_edit_product_screen.dart';
 import 'stock_history_screen.dart';
@@ -14,7 +13,6 @@ class ProductDetailScreen extends StatefulWidget {
 }
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
-  Product? _product;
   bool _isLoading = true;
 
   @override
@@ -27,8 +25,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     setState(() => _isLoading = true);
     final prov = Provider.of<ProductProvider>(context, listen: false);
     await prov.loadProducts();
-    final matches = prov.products.where((x) => x.id == widget.productId).toList();
-    _product = matches.isNotEmpty ? matches.first : null;
     setState(() => _isLoading = false);
   }
 
