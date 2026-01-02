@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 import '../models/product.dart';
 import '../providers/product_provider.dart';
 import '../providers/pos_provider.dart';
+import '../providers/customer_provider.dart';
+// customer selection and screens are handled via providers and customer screens
+import 'customers/add_edit_customer_screen.dart';
 
 class PosScreen extends StatefulWidget {
   const PosScreen({Key? key}) : super(key: key);
@@ -14,6 +17,8 @@ class PosScreen extends StatefulWidget {
 class _PosScreenState extends State<PosScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<Product> _filtered = [];
+  int? _selectedCustomerId;
+  String _selectedCustomerName = 'Walk-in';
 
   @override
   void initState() {
@@ -23,6 +28,75 @@ class _PosScreenState extends State<PosScreen> {
       setState(() => _filtered = prov.products);
     });
     _searchController.addListener(_onSearch);
+  }
+
+  Future<void> _chooseCustomerDialog() async {
+    final custProv = Provider.of<CustomerProvider>(context, listen: false);
+    await custProv.loadCustomers();
+    final ctrl = TextEditingController();
+    int? pickedId = _selectedCustomerId;
+    final res = await showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: const Text('Select Customer'),
+        content: SizedBox(
+          width: 400,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(controller: ctrl, decoration: const InputDecoration(prefixIcon: Icon(Icons.search), hintText: 'Search')),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 200,
+                child: Consumer<CustomerProvider>(builder: (context, cp, _) {
+                  final q = ctrl.text.trim().toLowerCase();
+                  final list = q.isEmpty ? cp.customers : cp.customers.where((c) => c.name.toLowerCase().contains(q) || (c.phone ?? '').contains(q)).toList();
+                  return ListView.builder(
+                    itemCount: list.length,
+                    itemBuilder: (context, idx) {
+                      final cst = list[idx];
+                      return RadioListTile<int>(
+                        value: cst.id!,
+                        groupValue: pickedId,
+                        title: Text(cst.name),
+                        subtitle: Text(cst.phone ?? ''),
+                        onChanged: (v) {
+                          pickedId = v;
+                          setState(() {});
+                        },
+                      );
+                    },
+                  );
+                }),
+              )
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Cancel')),
+          TextButton(
+              onPressed: () async {
+                Navigator.pop(c, true);
+              },
+              child: const Text('Select')),
+          TextButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                await Navigator.push(context, MaterialPageRoute(builder: (_) => const AddEditCustomerScreen()));
+                await Provider.of<CustomerProvider>(context, listen: false).loadCustomers();
+              },
+              child: const Text('Add New')),
+        ],
+      ),
+    );
+    if (res == true) {
+      final cp = Provider.of<CustomerProvider>(context, listen: false);
+      final selected = cp.customers.firstWhere((c) => c.id == pickedId, orElse: () => cp.customers.first);
+      setState(() {
+        _selectedCustomerId = selected.id;
+        _selectedCustomerName = selected.name;
+      });
+    }
   }
 
   void _onSearch() {
@@ -81,6 +155,21 @@ class _PosScreenState extends State<PosScreen> {
         appBar: AppBar(title: const Text('Point of Sale')),
         body: Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(child: Text('Customer: $_selectedCustomerName')),
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      await _chooseCustomerDialog();
+                    },
+                    icon: const Icon(Icons.person),
+                    label: const Text('Select'),
+                  )
+                ],
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
@@ -237,7 +326,7 @@ class _PosScreenState extends State<PosScreen> {
                                                   ? null
                                                   : () async {
                                                       final grand = pos.total;
-                                                      final saleId = await pos.completeSale(prodProv);
+                                                      final saleId = await pos.completeSale(prodProv, customerId: _selectedCustomerId, customerProvider: Provider.of<CustomerProvider>(context, listen: false));
                                                       if (saleId != null) {
                                                         showDialog(
                                                             context: context,

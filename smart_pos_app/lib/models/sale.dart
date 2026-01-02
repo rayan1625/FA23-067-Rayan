@@ -1,5 +1,6 @@
 class Sale {
   final int? id;
+  final int? customerId;
   final String saleDate; // ISO date string (date only)
   final double subtotal;
   final double discount;
@@ -9,6 +10,7 @@ class Sale {
 
   Sale({
     this.id,
+    this.customerId,
     required this.saleDate,
     required this.subtotal,
     required this.discount,
@@ -20,6 +22,7 @@ class Sale {
   factory Sale.fromMap(Map<String, dynamic> map) {
     return Sale(
       id: map['id'] as int?,
+      customerId: map['customer_id'] as int?,
       saleDate: map['sale_date'] as String,
       subtotal: (map['subtotal'] as num).toDouble(),
       discount: (map['discount'] as num).toDouble(),
@@ -32,6 +35,7 @@ class Sale {
   Map<String, dynamic> toMap() {
     return {
       if (id != null) 'id': id,
+      'customer_id': customerId,
       'sale_date': saleDate,
       'subtotal': subtotal,
       'discount': discount,

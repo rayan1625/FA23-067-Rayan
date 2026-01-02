@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'products/products_list_screen.dart';
 import 'pos_screen.dart';
+import 'customers/customers_list_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -18,6 +19,12 @@ class HomeScreen extends StatelessWidget {
               icon: const Icon(Icons.point_of_sale),
               label: const Text('New Sale'),
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PosScreen())),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.people),
+              label: const Text('Customers'),
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CustomersListScreen())),
             ),
             const SizedBox(height: 12),
             ElevatedButton.icon(

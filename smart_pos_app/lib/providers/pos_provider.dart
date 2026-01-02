@@ -4,6 +4,8 @@ import '../models/sale.dart';
 import '../models/sale_item.dart';
 import '../services/database_helper.dart';
 import 'product_provider.dart';
+import 'customer_provider.dart';
+import '../models/ledger_entry.dart';
 
 class CartItem {
   final Product product;
@@ -133,7 +135,7 @@ class PosProvider extends ChangeNotifier {
 
   /// Completes sale: validates stock, writes sale and items to DB (atomically), updates product stock,
   /// logs inventory_transactions via DB helper. Refreshes productProvider afterwards.
-  Future<int?> completeSale(ProductProvider productProvider) async {
+  Future<int?> completeSale(ProductProvider productProvider, {int? customerId, CustomerProvider? customerProvider}) async {
     if (_items.isEmpty) {
       _error = 'Cart is empty';
       notifyListeners();
@@ -156,6 +158,7 @@ class PosProvider extends ChangeNotifier {
     try {
       final now = DateTime.now();
       final sale = Sale(
+        customerId: customerId,
         saleDate: DateTime(now.year, now.month, now.day).toIso8601String(),
         subtotal: subtotal,
         discount: discountValue,
@@ -175,8 +178,26 @@ class PosProvider extends ChangeNotifier {
 
       final saleId = await _db.saveSaleWithItems(sale, itemsToSave);
 
-      // Refresh products in provider to update stock
+      // If a regular customer was selected, add a ledger debit entry
+      if (customerId != null && customerProvider != null) {
+        // try to find customer and ensure regular
+        final matches = customerProvider.customers.where((c) => c.id == customerId).toList();
+        if (matches.isNotEmpty && matches.first.isRegular) {
+          final ledger = LedgerEntry(
+            customerId: customerId,
+            saleId: saleId,
+            amount: total,
+            type: 'debit',
+            description: 'Sale #$saleId',
+            timestamp: now.toIso8601String(),
+          );
+          await _db.insertLedgerEntry(ledger);
+        }
+      }
+
+      // Refresh products and customers
       await productProvider.loadProducts();
+      if (customerProvider != null) await customerProvider.loadCustomers();
 
       clearCart();
       _isProcessing = false;
