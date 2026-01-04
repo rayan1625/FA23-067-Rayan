@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'products/products_list_screen.dart';
 import 'pos_screen.dart';
 import 'customers/customers_list_screen.dart';
+import 'reports/reports_home_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +32,12 @@ class HomeScreen extends StatelessWidget {
               icon: const Icon(Icons.store),
               label: const Text('Manage Products'),
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ProductsListScreen())),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.report),
+              label: const Text('Reports'),
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ReportsHomeScreen())),
             ),
             const SizedBox(height: 12),
             // Placeholder for future features

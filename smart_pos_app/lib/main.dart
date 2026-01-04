@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/product_provider.dart';
 import 'providers/customer_provider.dart';
+import 'providers/reports_provider.dart';
 import 'screens/home_screen.dart';
 
 void main() {
@@ -9,7 +10,7 @@ void main() {
 }
 
 class SmartPosApp extends StatelessWidget {
-  const SmartPosApp({Key? key}) : super(key: key);
+  const SmartPosApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +18,7 @@ class SmartPosApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ProductProvider()),
         ChangeNotifierProvider(create: (_) => CustomerProvider()),
+        ChangeNotifierProvider(create: (_) => ReportsProvider()),
       ],
       child: MaterialApp(
         title: 'Smart POS',
