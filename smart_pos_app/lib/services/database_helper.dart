@@ -56,7 +56,9 @@ class DatabaseHelper {
           amount REAL,
           type TEXT,
           description TEXT,
-          timestamp TEXT
+          timestamp TEXT,
+          sync_status TEXT DEFAULT 'synced',
+          sync_timestamp TEXT
         )
       ''');
     }
@@ -71,7 +73,9 @@ class DatabaseHelper {
         price REAL,
         cost REAL,
         category TEXT,
-        stock_quantity INTEGER
+        stock_quantity INTEGER,
+        sync_status TEXT DEFAULT 'synced',
+        sync_timestamp TEXT
       )
     ''');
 
@@ -82,7 +86,9 @@ class DatabaseHelper {
         type TEXT,
         quantity INTEGER,
         note TEXT,
-        timestamp TEXT
+        timestamp TEXT,
+        sync_status TEXT DEFAULT 'synced',
+        sync_timestamp TEXT
       )
     ''');
 
@@ -96,7 +102,9 @@ class DatabaseHelper {
         discount REAL,
         tax REAL,
         total REAL,
-        timestamp TEXT
+        timestamp TEXT,
+        sync_status TEXT DEFAULT 'synced',
+        sync_timestamp TEXT
       )
     ''');
 
@@ -107,7 +115,9 @@ class DatabaseHelper {
         product_id INTEGER,
         quantity INTEGER,
         price_at_sale REAL,
-        line_total REAL
+        line_total REAL,
+        sync_status TEXT DEFAULT 'synced',
+        sync_timestamp TEXT
       )
     ''');
     // customers and ledger (initial creation)
@@ -118,7 +128,9 @@ class DatabaseHelper {
         phone TEXT,
         address TEXT,
         is_regular INTEGER,
-        created_at TEXT
+        created_at TEXT,
+        sync_status TEXT DEFAULT 'synced',
+        sync_timestamp TEXT
       )
     ''');
 
@@ -130,7 +142,9 @@ class DatabaseHelper {
         amount REAL,
         type TEXT,
         description TEXT,
-        timestamp TEXT
+        timestamp TEXT,
+        sync_status TEXT DEFAULT 'synced',
+        sync_timestamp TEXT
       )
     ''');
   }
@@ -269,6 +283,42 @@ class DatabaseHelper {
     final db = await database;
     final maps = await db.query('products', orderBy: 'name COLLATE NOCASE');
     return maps.map((m) => Product.fromMap(m)).toList();
+  }
+
+  // Raw getters for sync operations
+  Future<List<Map<String, dynamic>>> getAllProductsRaw() async {
+    final db = await database;
+    return await db.query('products');
+  }
+
+  Future<List<Map<String, dynamic>>> getAllSalesRaw() async {
+    final db = await database;
+    return await db.query('sales');
+  }
+
+  Future<List<Map<String, dynamic>>> getAllSaleItemsRaw() async {
+    final db = await database;
+    return await db.query('sale_items');
+  }
+
+  Future<List<Map<String, dynamic>>> getAllCustomersRaw() async {
+    final db = await database;
+    return await db.query('customers');
+  }
+
+  Future<List<Map<String, dynamic>>> getAllLedgerEntriesRaw() async {
+    final db = await database;
+    return await db.query('ledger_entries');
+  }
+
+  Future<List<Map<String, dynamic>>> getAllInventoryTransactionsRaw() async {
+    final db = await database;
+    return await db.query('inventory_transactions');
+  }
+
+  Future<int> updateSyncStatus(String table, int id, String status, String timestamp) async {
+    final db = await database;
+    return await db.update(table, {'sync_status': status, 'sync_timestamp': timestamp}, where: 'id = ?', whereArgs: [id]);
   }
 
   Future<List<Product>> searchProducts(String query) async {
