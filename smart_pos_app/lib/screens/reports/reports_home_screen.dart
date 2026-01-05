@@ -11,26 +11,32 @@ class ReportsHomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Reports')),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(12.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ElevatedButton.icon(
-              icon: const Icon(Icons.bar_chart),
-              label: const Text('Daily / Monthly Sales'),
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DailyMonthlySalesScreen())),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.bar_chart),
+                title: const Text('Sales Reports'),
+                subtitle: const Text('Daily, monthly and custom range'),
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DailyMonthlySalesScreen())),
+              ),
             ),
-            const SizedBox(height: 12),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.inventory),
-              label: const Text('Stock Report'),
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const StockReportScreen())),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.inventory),
+                title: const Text('Stock Report'),
+                subtitle: const Text('Current stock, low and out of stock items'),
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const StockReportScreen())),
+              ),
             ),
-            const SizedBox(height: 12),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.person_search),
-              label: const Text('Customer Reports'),
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CustomerReportScreen())),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.people_outline),
+                title: const Text('Customer Reports'),
+                subtitle: const Text('Top customers and outstanding balances'),
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CustomerReportScreen())),
+              ),
             ),
           ],
         ),

@@ -56,9 +56,7 @@ class DatabaseHelper {
           amount REAL,
           type TEXT,
           description TEXT,
-          timestamp TEXT,
-          sync_status TEXT DEFAULT 'synced',
-          sync_timestamp TEXT
+          timestamp TEXT
         )
       ''');
     }
@@ -73,9 +71,7 @@ class DatabaseHelper {
         price REAL,
         cost REAL,
         category TEXT,
-        stock_quantity INTEGER,
-        sync_status TEXT DEFAULT 'synced',
-        sync_timestamp TEXT
+        stock_quantity INTEGER
       )
     ''');
 
@@ -86,9 +82,7 @@ class DatabaseHelper {
         type TEXT,
         quantity INTEGER,
         note TEXT,
-        timestamp TEXT,
-        sync_status TEXT DEFAULT 'synced',
-        sync_timestamp TEXT
+        timestamp TEXT
       )
     ''');
 
@@ -102,9 +96,7 @@ class DatabaseHelper {
         discount REAL,
         tax REAL,
         total REAL,
-        timestamp TEXT,
-        sync_status TEXT DEFAULT 'synced',
-        sync_timestamp TEXT
+        timestamp TEXT
       )
     ''');
 
@@ -115,9 +107,7 @@ class DatabaseHelper {
         product_id INTEGER,
         quantity INTEGER,
         price_at_sale REAL,
-        line_total REAL,
-        sync_status TEXT DEFAULT 'synced',
-        sync_timestamp TEXT
+        line_total REAL
       )
     ''');
     // customers and ledger (initial creation)
@@ -128,9 +118,7 @@ class DatabaseHelper {
         phone TEXT,
         address TEXT,
         is_regular INTEGER,
-        created_at TEXT,
-        sync_status TEXT DEFAULT 'synced',
-        sync_timestamp TEXT
+        created_at TEXT
       )
     ''');
 
@@ -142,9 +130,7 @@ class DatabaseHelper {
         amount REAL,
         type TEXT,
         description TEXT,
-        timestamp TEXT,
-        sync_status TEXT DEFAULT 'synced',
-        sync_timestamp TEXT
+        timestamp TEXT
       )
     ''');
   }
@@ -285,42 +271,6 @@ class DatabaseHelper {
     return maps.map((m) => Product.fromMap(m)).toList();
   }
 
-  // Raw getters for sync operations
-  Future<List<Map<String, dynamic>>> getAllProductsRaw() async {
-    final db = await database;
-    return await db.query('products');
-  }
-
-  Future<List<Map<String, dynamic>>> getAllSalesRaw() async {
-    final db = await database;
-    return await db.query('sales');
-  }
-
-  Future<List<Map<String, dynamic>>> getAllSaleItemsRaw() async {
-    final db = await database;
-    return await db.query('sale_items');
-  }
-
-  Future<List<Map<String, dynamic>>> getAllCustomersRaw() async {
-    final db = await database;
-    return await db.query('customers');
-  }
-
-  Future<List<Map<String, dynamic>>> getAllLedgerEntriesRaw() async {
-    final db = await database;
-    return await db.query('ledger_entries');
-  }
-
-  Future<List<Map<String, dynamic>>> getAllInventoryTransactionsRaw() async {
-    final db = await database;
-    return await db.query('inventory_transactions');
-  }
-
-  Future<int> updateSyncStatus(String table, int id, String status, String timestamp) async {
-    final db = await database;
-    return await db.update(table, {'sync_status': status, 'sync_timestamp': timestamp}, where: 'id = ?', whereArgs: [id]);
-  }
-
   Future<List<Product>> searchProducts(String query) async {
     final db = await database;
     final maps = await db.query(
@@ -365,105 +315,105 @@ class DatabaseHelper {
     );
   }
 
-  // For cleanup in tests
-  Future<void> close() async {
+  // Reports: Sales
+  Future<Map<String, dynamic>> getDailySalesReport(DateTime date) async {
     final db = await database;
-    await db.close();
-    _database = null;
-  }
+    final dateStr = date.toIso8601String().split('T').first; // YYYY-MM-DD
 
-  // ------------------ Reports & analytics queries ------------------
-
-  Future<Map<String, dynamic>> getDailySales(DateTime day) async {
-    final db = await database;
-    final iso = day.toIso8601String();
-    final totalRes = await db.rawQuery('SELECT IFNULL(SUM(total),0) as total, COUNT(*) as bills FROM sales WHERE date(sale_date) = date(?)', [iso]);
+    final totalRes = await db.rawQuery('SELECT IFNULL(SUM(total),0) as total_sales, COUNT(*) as bills FROM sales WHERE date(sale_date) = ?', [dateStr]);
     final profitRes = await db.rawQuery('''
       SELECT IFNULL(SUM((si.price_at_sale - p.cost) * si.quantity),0) as profit
       FROM sale_items si
-      JOIN products p ON p.id = si.product_id
-      JOIN sales s ON s.id = si.sale_id
-      WHERE date(s.sale_date) = date(?)
-    ''', [iso]);
+      JOIN sales s ON si.sale_id = s.id
+      JOIN products p ON si.product_id = p.id
+      WHERE date(s.sale_date) = ?
+    ''', [dateStr]);
+
     return {
-      'total': (totalRes.first['total'] as num?)?.toDouble() ?? 0.0,
-      'bills': (totalRes.first['bills'] as num?)?.toInt() ?? 0,
-      'profit': (profitRes.first['profit'] as num?)?.toDouble() ?? 0.0,
+      'date': dateStr,
+      'total_sales': (totalRes.first['total_sales'] as num).toDouble(),
+      'bills': totalRes.first['bills'] ?? 0,
+      'profit': (profitRes.first['profit'] as num).toDouble(),
     };
   }
 
-  Future<Map<String, dynamic>> getMonthlySales(int year, int month) async {
+  Future<Map<String, dynamic>> getMonthlySalesReport(int year, int month) async {
     final db = await database;
-    final ym = '${year.toString().padLeft(4,'0')}-${month.toString().padLeft(2,'0')}';
-    final currRes = await db.rawQuery('SELECT IFNULL(SUM(total),0) as total, COUNT(*) as bills FROM sales WHERE strftime("%Y-%m", sale_date) = ?', [ym]);
+    final monthStr = '${year.toString().padLeft(4, '0')}-${month.toString().padLeft(2, '0')}'; // YYYY-MM
+
+    final totalRes = await db.rawQuery('SELECT IFNULL(SUM(total),0) as total_sales, COUNT(*) as bills FROM sales WHERE strftime("%Y-%m", sale_date) = ?', [monthStr]);
     final profitRes = await db.rawQuery('''
       SELECT IFNULL(SUM((si.price_at_sale - p.cost) * si.quantity),0) as profit
       FROM sale_items si
-      JOIN products p ON p.id = si.product_id
-      JOIN sales s ON s.id = si.sale_id
+      JOIN sales s ON si.sale_id = s.id
+      JOIN products p ON si.product_id = p.id
       WHERE strftime("%Y-%m", s.sale_date) = ?
-    ''', [ym]);
-
-    // previous month
-    var prevYear = year;
-    var prevMonth = month - 1;
-    if (prevMonth < 1) { prevMonth = 12; prevYear -= 1; }
-    final prevYm = '${prevYear.toString().padLeft(4,'0')}-${prevMonth.toString().padLeft(2,'0')}';
-    final prevRes = await db.rawQuery('SELECT IFNULL(SUM(total),0) as total FROM sales WHERE strftime("%Y-%m", sale_date) = ?', [prevYm]);
+    ''', [monthStr]);
 
     return {
-      'total': (currRes.first['total'] as num?)?.toDouble() ?? 0.0,
-      'bills': (currRes.first['bills'] as num?)?.toInt() ?? 0,
-      'profit': (profitRes.first['profit'] as num?)?.toDouble() ?? 0.0,
-      'previous_total': (prevRes.first['total'] as num?)?.toDouble() ?? 0.0,
+      'month': monthStr,
+      'total_sales': (totalRes.first['total_sales'] as num).toDouble(),
+      'bills': totalRes.first['bills'] ?? 0,
+      'profit': (profitRes.first['profit'] as num).toDouble(),
     };
   }
 
-  Future<Map<String, dynamic>> getSalesInRange(DateTime start, DateTime end) async {
+  Future<Map<String, dynamic>> getSalesForDateRange(DateTime from, DateTime to) async {
     final db = await database;
-    final s = start.toIso8601String();
-    final e = end.toIso8601String();
-    final totRes = await db.rawQuery('SELECT IFNULL(SUM(total),0) as total, COUNT(*) as bills FROM sales WHERE date(sale_date) BETWEEN date(?) AND date(?)', [s, e]);
+    final fromStr = from.toIso8601String().split('T').first;
+    final toStr = to.toIso8601String().split('T').first;
+
+    final totalRes = await db.rawQuery('SELECT IFNULL(SUM(total),0) as total_sales, COUNT(*) as bills FROM sales WHERE date(sale_date) BETWEEN ? AND ?', [fromStr, toStr]);
     final profitRes = await db.rawQuery('''
       SELECT IFNULL(SUM((si.price_at_sale - p.cost) * si.quantity),0) as profit
       FROM sale_items si
-      JOIN products p ON p.id = si.product_id
-      JOIN sales s ON s.id = si.sale_id
-      WHERE date(s.sale_date) BETWEEN date(?) AND date(?)
-    ''', [s, e]);
+      JOIN sales s ON si.sale_id = s.id
+      JOIN products p ON si.product_id = p.id
+      WHERE date(s.sale_date) BETWEEN ? AND ?
+    ''', [fromStr, toStr]);
+
     return {
-      'total': (totRes.first['total'] as num?)?.toDouble() ?? 0.0,
-      'bills': (totRes.first['bills'] as num?)?.toInt() ?? 0,
-      'profit': (profitRes.first['profit'] as num?)?.toDouble() ?? 0.0,
+      'from': fromStr,
+      'to': toStr,
+      'total_sales': (totalRes.first['total_sales'] as num).toDouble(),
+      'bills': totalRes.first['bills'] ?? 0,
+      'profit': (profitRes.first['profit'] as num).toDouble(),
     };
   }
 
-  // Stock
-  Future<List<Map<String, dynamic>>> getStockList() async {
+  Future<List<Map<String, dynamic>>> getSalesListForDateRange(DateTime from, DateTime to) async {
     final db = await database;
-    return await db.query('products', orderBy: 'name COLLATE NOCASE');
+    final fromStr = from.toIso8601String();
+    final toStr = to.toIso8601String();
+    return await db.rawQuery('SELECT * FROM sales WHERE sale_date BETWEEN ? AND ? ORDER BY timestamp DESC', [fromStr, toStr]);
+  }
+
+  // Stock reports
+  Future<List<Map<String, dynamic>>> getAllStockItems() async {
+    final db = await database;
+    return await db.rawQuery('SELECT *, (IFNULL(price,0) * IFNULL(stock_quantity,0)) as total_value FROM products ORDER BY name COLLATE NOCASE');
   }
 
   Future<double> getTotalStockValue() async {
     final db = await database;
-    final res = await db.rawQuery('SELECT IFNULL(SUM(price * stock_quantity),0) as value FROM products');
-    return (res.first['value'] as num?)?.toDouble() ?? 0.0;
+    final res = await db.rawQuery('SELECT IFNULL(SUM(IFNULL(price,0) * IFNULL(stock_quantity,0)),0) as total_value FROM products');
+    return (res.first['total_value'] as num).toDouble();
   }
 
   Future<List<Map<String, dynamic>>> getOutOfStockItems() async {
     final db = await database;
-    return await db.query('products', where: 'stock_quantity <= 0');
+    return await db.rawQuery('SELECT * FROM products WHERE IFNULL(stock_quantity,0) <= 0 ORDER BY name COLLATE NOCASE');
   }
 
-  // Customers
+  // Customer reports
   Future<List<Map<String, dynamic>>> getTopCustomers({int limit = 10}) async {
     final db = await database;
     return await db.rawQuery('''
-      SELECT c.id, c.name, IFNULL(SUM(s.total),0) as total
+      SELECT c.id, c.name, IFNULL(SUM(s.total),0) as total_purchase, COUNT(s.id) as bills
       FROM customers c
       LEFT JOIN sales s ON s.customer_id = c.id
       GROUP BY c.id
-      ORDER BY total DESC
+      ORDER BY total_purchase DESC
       LIMIT ?
     ''', [limit]);
   }
@@ -471,9 +421,9 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getCustomersWithOutstanding() async {
     final db = await database;
     return await db.rawQuery('''
-      SELECT c.id, c.name, IFNULL(SUM(CASE WHEN l.type = "debit" THEN l.amount ELSE -l.amount END),0) as balance
+      SELECT c.id, c.name, IFNULL(SUM(CASE WHEN le.type = "debit" THEN le.amount ELSE -le.amount END),0) as balance
       FROM customers c
-      LEFT JOIN ledger_entries l ON l.customer_id = c.id
+      LEFT JOIN ledger_entries le ON c.id = le.customer_id
       GROUP BY c.id
       HAVING balance > 0
       ORDER BY balance DESC
@@ -484,9 +434,16 @@ class DatabaseHelper {
     final db = await database;
     final res = await db.rawQuery('SELECT IFNULL(SUM(total),0) as total, COUNT(*) as bills, IFNULL(MAX(sale_date),"") as last_sale FROM sales WHERE customer_id = ?', [customerId]);
     return {
-      'total': (res.first['total'] as num?)?.toDouble() ?? 0.0,
-      'bills': (res.first['bills'] as num?)?.toInt() ?? 0,
+      'total': (res.first['total'] as num).toDouble(),
+      'bills': res.first['bills'] ?? 0,
       'last_sale': res.first['last_sale'] ?? '',
     };
+  }
+
+  // For cleanup in tests
+  Future<void> close() async {
+    final db = await database;
+    await db.close();
+    _database = null;
   }
 }

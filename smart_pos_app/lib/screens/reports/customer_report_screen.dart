@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../providers/reports_provider.dart';
 
@@ -11,26 +10,12 @@ class CustomerReportScreen extends StatefulWidget {
 }
 
 class _CustomerReportScreenState extends State<CustomerReportScreen> {
-  List<Map<String, dynamic>> _top = [];
-  List<Map<String, dynamic>> _owing = [];
-  bool _loading = true;
-
-  Future<void> _load() async {
-    setState(() => _loading = true);
-    final provider = Provider.of<ReportsProvider>(context, listen: false);
-    final top = await provider.fetchTopCustomers();
-    final owing = await provider.fetchCustomersWithOutstanding();
-    setState(() {
-      _top = top;
-      _owing = owing;
-      _loading = false;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    _load();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ReportsProvider>(context, listen: false).fetchCustomerReports();
+    });
   }
 
   @override
@@ -38,35 +23,42 @@ class _CustomerReportScreenState extends State<CustomerReportScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Customer Reports')),
       body: RefreshIndicator(
-        onRefresh: _load,
-        child: _loading
-            ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Top Customers', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 8),
-                    ..._top.map((c) => Card(
-                          child: ListTile(
-                            title: Text(c['name'] ?? ''),
-                            trailing: Text(NumberFormat.simpleCurrency().format((c['total'] ?? 0.0))),
-                          ),
-                        )),
-                    const SizedBox(height: 16),
-                    const Text('Customers with Outstanding Balance', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 8),
-                    ..._owing.map((c) => Card(
-                          child: ListTile(
-                            title: Text(c['name'] ?? ''),
-                            trailing: Text(NumberFormat.simpleCurrency().format((c['balance'] ?? 0.0))),
-                          ),
-                        )),
-                  ],
-                ),
-              ),
+        onRefresh: () => Provider.of<ReportsProvider>(context, listen: false).fetchCustomerReports(),
+        child: Consumer<ReportsProvider>(builder: (context, rp, _) {
+          return ListView(
+            padding: const EdgeInsets.all(12),
+            children: [
+              const Text('Top Customers', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              ...rp.topCustomers.map((c) => Card(
+                    child: ListTile(
+                      title: Text(c['name'] ?? ''),
+                      subtitle: Text('Total purchases: ${c['total_purchase']?.toStringAsFixed(2) ?? '0.00'} • Bills: ${c['bills'] ?? 0}'),
+                      onTap: () async {
+                        final summary = await rp.fetchCustomerSummary(c['id']);
+                        if (!mounted) return;
+                        showDialog(context: context, builder: (ctx) => AlertDialog(
+                          title: Text('Summary - ${c['name']}'),
+                          content: Text('Total: ${summary['total'].toStringAsFixed(2)}\nBills: ${summary['bills']}\nLast: ${summary['last_sale'] ?? 'N/A'}'),
+                          actions: [TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Close'))],
+                        ));
+                      },
+                    ),
+                  )),
+              const SizedBox(height: 12),
+              const Text('Customers with Outstanding Balance', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              if (rp.customersOutstanding.isEmpty) const Text('None')
+              else
+                ...rp.customersOutstanding.map((c) => Card(
+                      child: ListTile(
+                        title: Text(c['name'] ?? ''),
+                        trailing: Text(c['balance']?.toStringAsFixed(2) ?? '0.00', style: const TextStyle(color: Colors.red)),
+                      ),
+                    )),
+            ],
+          );
+        }),
       ),
     );
   }

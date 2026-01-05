@@ -1,90 +1,77 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../services/database_helper.dart';
 
 class ReportsProvider extends ChangeNotifier {
   final DatabaseHelper _db = DatabaseHelper();
 
-  bool isLoading = false;
+  bool loading = false;
 
-  Future<Map<String, dynamic>> fetchDailySales(DateTime day) async {
-    isLoading = true;
+  // Sales report state
+  Map<String, dynamic>? dailyReport;
+  Map<String, dynamic>? monthlyReport;
+  Map<String, dynamic>? rangeReport;
+  List<Map<String, dynamic>> rangeSales = [];
+
+  // Stock
+  List<Map<String, dynamic>> stockItems = [];
+  double totalStockValue = 0.0;
+  List<Map<String, dynamic>> outOfStock = [];
+
+  // Customers
+  List<Map<String, dynamic>> topCustomers = [];
+  List<Map<String, dynamic>> customersOutstanding = [];
+
+  Future<void> fetchDailyReport(DateTime date) async {
+    loading = true;
     notifyListeners();
-    final res = await _db.getDailySales(day);
-    isLoading = false;
+    dailyReport = await _db.getDailySalesReport(date);
+    loading = false;
     notifyListeners();
-    return res;
   }
 
-  Future<Map<String, dynamic>> fetchMonthlySales(int year, int month) async {
-    isLoading = true;
+  Future<void> fetchMonthlyReport(int year, int month) async {
+    loading = true;
     notifyListeners();
-    final res = await _db.getMonthlySales(year, month);
-    isLoading = false;
+    monthlyReport = await _db.getMonthlySalesReport(year, month);
+    loading = false;
     notifyListeners();
-    return res;
   }
 
-  Future<Map<String, dynamic>> fetchSalesInRange(DateTime start, DateTime end) async {
-    isLoading = true;
+  Future<void> fetchRangeReport(DateTime from, DateTime to) async {
+    loading = true;
     notifyListeners();
-    final res = await _db.getSalesInRange(start, end);
-    isLoading = false;
+    rangeReport = await _db.getSalesForDateRange(from, to);
+    rangeSales = await _db.getSalesListForDateRange(from, to);
+    loading = false;
     notifyListeners();
-    return res;
   }
 
-  Future<List<Map<String, dynamic>>> fetchStockList() async {
-    isLoading = true;
+  Future<void> fetchStockReports() async {
+    loading = true;
     notifyListeners();
-    final res = await _db.getStockList();
-    isLoading = false;
+    stockItems = await _db.getAllStockItems();
+    totalStockValue = await _db.getTotalStockValue();
+    outOfStock = await _db.getOutOfStockItems();
+    loading = false;
     notifyListeners();
-    return res;
   }
 
-  Future<double> fetchTotalStockValue() async {
-    isLoading = true;
+  Future<void> fetchCustomerReports() async {
+    loading = true;
     notifyListeners();
-    final res = await _db.getTotalStockValue();
-    isLoading = false;
+    topCustomers = await _db.getTopCustomers();
+    customersOutstanding = await _db.getCustomersWithOutstanding();
+    loading = false;
     notifyListeners();
-    return res;
-  }
-
-  Future<List<Map<String, dynamic>>> fetchOutOfStockItems() async {
-    isLoading = true;
-    notifyListeners();
-    final res = await _db.getOutOfStockItems();
-    isLoading = false;
-    notifyListeners();
-    return res;
-  }
-
-  Future<List<Map<String, dynamic>>> fetchTopCustomers({int limit = 10}) async {
-    isLoading = true;
-    notifyListeners();
-    final res = await _db.getTopCustomers(limit: limit);
-    isLoading = false;
-    notifyListeners();
-    return res;
-  }
-
-  Future<List<Map<String, dynamic>>> fetchCustomersWithOutstanding() async {
-    isLoading = true;
-    notifyListeners();
-    final res = await _db.getCustomersWithOutstanding();
-    isLoading = false;
-    notifyListeners();
-    return res;
   }
 
   Future<Map<String, dynamic>> fetchCustomerSummary(int customerId) async {
-    isLoading = true;
+    return await _db.getCustomerSalesSummary(customerId);
+  }
+
+  void clearRange() {
+    rangeReport = null;
+    rangeSales = [];
     notifyListeners();
-    final res = await _db.getCustomerSalesSummary(customerId);
-    isLoading = false;
-    notifyListeners();
-    return res;
   }
 }

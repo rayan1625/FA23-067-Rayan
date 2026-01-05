@@ -3,7 +3,6 @@ import 'products/products_list_screen.dart';
 import 'pos_screen.dart';
 import 'customers/customers_list_screen.dart';
 import 'reports/reports_home_screen.dart';
-import 'settings_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -36,15 +35,9 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             ElevatedButton.icon(
-              icon: const Icon(Icons.report),
+              icon: const Icon(Icons.analytics),
               label: const Text('Reports'),
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ReportsHomeScreen())),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.settings),
-              label: const Text('Settings'),
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen())),
             ),
             const SizedBox(height: 12),
             // Placeholder for future features
