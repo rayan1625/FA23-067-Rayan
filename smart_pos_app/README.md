@@ -22,3 +22,10 @@ A production-ready Flutter application for small/medium shops with complete POS,
 1. Clone the repo:
    ```bash
    git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+
+## Document
+[MAD Document.rtf](https://github.com/user-attachments/files/24539870/MAD.Document.rtf)
+
+## Screenshots
+[Uploading Screenshots.zip…]()
+
