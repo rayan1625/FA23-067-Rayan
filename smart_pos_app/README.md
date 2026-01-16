@@ -27,7 +27,8 @@ A production-ready Flutter application for small/medium shops with complete POS,
 [MAD Document.rtf](https://github.com/user-attachments/files/24539870/MAD.Document.rtf)
 
 ## Screenshots
-[Uploading Screenshots.zip…]()
+
+[Screenshots.zip](https://github.com/user-attachments/files/24658756/Screenshots.zip)
 
 ## Apk link
 https://drive.google.com/file/d/134E9C5kItO2wTvwkt3akyclmcWs-8CGd/view?usp=drivesdk
