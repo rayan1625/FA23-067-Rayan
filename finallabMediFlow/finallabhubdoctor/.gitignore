@@ -1,0 +1,6 @@
+node_modules/
+backup_*/
+.env
+dist/
+*.log
+database.sqlite
